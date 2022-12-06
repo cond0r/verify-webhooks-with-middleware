@@ -17,9 +17,9 @@ function byteStringToUint8Array(byteString: string) {
 }
 
 export async function middleware(req: NextRequest) {
-  const signatureBase64 = req.headers.get("x-test-signature");
+  const signatureHeader = req.headers.get("x-test-signature");
 
-  if (!signatureBase64) {
+  if (!signatureHeader) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
 
   const data = await req.text();
 
-  const signature = byteStringToUint8Array(atob(signatureBase64));
+  const signature = byteStringToUint8Array(atob(signatureHeader));
 
   const verified = await crypto.subtle.verify(
     "HMAC",
